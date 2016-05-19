@@ -1,29 +1,103 @@
 import UIKit
 import XCTest
+import RxSwift
 import RxPager
 
+// MARK: structs
+
+/// Sample Page Data Struct
+struct Page {
+  let values: [Int]
+  let hasNext: Bool
+}
+
+// MARK: globals
+
+/// page factory helper
+func getPager() -> Pager<Page> {
+  return Pager(
+    paging: { (previousPage: Page?) -> Observable<Page> in
+      let last = previousPage?.values.last ?? 0
+      return Observable.just(Page(
+        values: [last + 1, last + 2, last + 3],
+        hasNext: last + 3 < 10)
+      )
+    },
+    hasNext: { (page: Page?) -> Bool in
+      return page?.hasNext == true
+    }
+  )
+}
+
 class Tests: XCTestCase {
-    
-    override func setUp() {
-        super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+
+  var subscription: Disposable?
+
+  override func tearDown() {
+    subscription?.dispose()
+  }
+
+  func testGetFirstPage() {
+    let expectation = expectationWithDescription("get first page")
+    let pager = getPager()
+    subscription = pager.page
+      .subscribeNext { page in
+      XCTAssertEqual(page.values, [1, 2, 3])
+      expectation.fulfill()
     }
-    
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown()
+
+    pager.next()
+
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testGetSecondPage() {
+    let expectation = expectationWithDescription("get first two page")
+    let pager = getPager()
+
+    subscription = pager.page
+      .skip(1)
+      .subscribeNext { page in
+        XCTAssertEqual(page.values, [4, 5, 6])
+        expectation.fulfill()
     }
-    
-    func testExample() {
-        // This is an example of a functional test case.
-        XCTAssert(true, "Pass")
+
+    pager.next()
+    pager.next()
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testGetThirdPage() {
+    let expectation = expectationWithDescription("get first three page")
+    let pager = getPager()
+
+    subscription = pager.page
+      .skip(2)
+      .subscribeNext { page in
+        XCTAssertEqual(page.values, [7, 8, 9])
+        expectation.fulfill()
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measureBlock() {
-            // Put the code you want to measure the time of here.
-        }
+
+    pager.next()
+    pager.next()
+    pager.next()
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+
+  func testCompletePager() {
+    let expectation = expectationWithDescription("get completed event")
+    let pager = getPager()
+
+    subscription = pager.page
+      .subscribeCompleted { _ in
+        expectation.fulfill()
     }
-    
+
+    pager.next() // [1, 2 ,3]
+    pager.next() // [4, 5, 6]
+    pager.next() // [7, 8, 9]
+    pager.next() // [10, 11, 12], completed
+    waitForExpectationsWithTimeout(1, handler: nil)
+  }
+  
 }

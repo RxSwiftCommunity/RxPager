@@ -1,0 +1,19 @@
+PODS:
+  - RxPager (0.1.0):
+    - RxSwift (~> 2.5.0)
+  - RxSwift (2.5.0)
+
+DEPENDENCIES:
+  - RxPager (from `../`)
+
+EXTERNAL SOURCES:
+  RxPager:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  RxPager: e64c716219982cce515c49ab2f21c089e19a3941
+  RxSwift: 402b41a50e922a0368fc14cb3bc9f4427920e8ae
+
+PODFILE CHECKSUM: 3e3682c470306e91b5074db9075fdd6a9072ca2b
+
+COCOAPODS: 1.0.0

@@ -5,6 +5,38 @@
 [![License](https://img.shields.io/cocoapods/l/RxPager.svg?style=flat)](http://cocoapods.org/pods/RxPager)
 [![Platform](https://img.shields.io/cocoapods/p/RxPager.svg?style=flat)](http://cocoapods.org/pods/RxPager)
 
+## Usage
+
+```swift
+import RxSwift
+import RxPager
+
+let pager: Pager<[Int]> = Pager(
+  
+  // paging function, take previous Page, return Observable<Page>
+  paging: { (previousPage: Page?) -> Observable<Page> in
+    let last = previousPage?.values.last ?? 0
+    return Observable.just([last + 1, last + 2, last + 3])
+  },
+  
+  // return true if there are more pages to be emitted
+  hasNext: { (page: [Int]?) -> Bool in
+    return page?.last < 10
+  }
+)
+
+pager
+  .page
+  .scan([Int]()) { $0 + $1 }
+  .subscribeNext { print($0) }
+
+pager.next() // print [1, 2 ,3]
+pager.next() // print [1, 2 ,3, 4, 5, 6]
+pager.next() // print [1, 2 ,3, 4, 5, 6, 7, 8, 9]
+pager.next() // print [1, 2 ,3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+```
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
@@ -19,10 +51,6 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod "RxPager"
 ```
-
-## Author
-
-Pierre-Guillaume Herveou, pgherveou@gmail.com
 
 ## License
 
