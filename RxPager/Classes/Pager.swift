@@ -45,6 +45,9 @@ final public class Pager<T> {
           pager.pages.onCompleted()
         }
       }
+
+      // share subscription
+      .shareReplay(1)
   }()
 
   // MARK: Initializers
