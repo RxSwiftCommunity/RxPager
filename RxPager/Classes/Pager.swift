@@ -25,9 +25,10 @@ final public class Pager<T> {
 
   lazy public var page: Observable<T> = {
     let paging = self.paging
-
+    
     return self.pages
       .asObservable()
+      .startWith(.None)
 
       // noopify next, to avoid calling more than one time per page
       .doOnNext { [weak self] _ in self?.nextDelegate = noOp }
