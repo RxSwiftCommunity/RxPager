@@ -39,11 +39,11 @@ pager.next() // print [1, 2 ,3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 ## Api
 
-### Pager<Page>(paging: Paging, hasNext: HasNext)
-#### paging: (Page?) -> Observable<Page>
+### `Pager<Page>(paging: Paging, hasNext: HasNext)`
+#### `paging: (Page?) -> Observable<Page>`
 Take the previous page and return the next Observable<Page>
 
-#### hasNext: (Page?) -> Observable<Page>>
+#### `hasNext: (Page?) -> Observable<Page>>`
 Take the last page and return true if there is more pages
 
 ## Example
