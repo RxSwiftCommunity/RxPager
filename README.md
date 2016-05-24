@@ -61,6 +61,9 @@ it, simply add the following line to your Podfile:
 pod "RxPager"
 ```
 
+## Credits
+This pod is inspired by inspired by @mttkay work https://gist.github.com/mttkay/24881a0ce986f6ec4b4d
+
 ## License
 
 RxPager is available under the MIT license. See the LICENSE file for more info.
