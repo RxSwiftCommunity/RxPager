@@ -17,15 +17,14 @@ final public class Pager<T> {
 
   private let paging: Paging
   private let hasNext: HasNext
-  lazy private var nextDelegate: () -> Void = { _ in self.pages.onNext(nil) }
-
   private let pages: PublishSubject<T?>
+  private lazy var nextDelegate: () -> Void = { _ in self.pages.onNext(nil) }
 
   // MARK: Public properties
 
-  lazy public var page: Observable<T> = {
+  public private(set) lazy var page: Observable<T> = {
     let paging = self.paging
-    
+
     return self.pages
       .asObservable()
       .startWith(.None)
