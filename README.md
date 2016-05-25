@@ -39,12 +39,12 @@ pager.next() // print [1, 2 ,3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 ## Api
 
-### Pager<Page>(paging: Paging, hasNext: HasNext)
-#### paging: (Page?) -> Observable<Page>
+### `Pager<Page>(paging: Paging, hasNext: HasNext)`
+#### `paging: (Page?) -> Observable<Page>`
 Take the previous page and return the next Observable<Page>
 
-#### hasNext: (Page?) -> Observable<Page>>
-Take the last page and return true if there is more pages
+#### `hasNext: (Page?) -> Observable<Page>>`
+Take the last page and return true if there are more pages to load
 
 ## Example
 
@@ -60,6 +60,9 @@ it, simply add the following line to your Podfile:
 ```ruby
 pod "RxPager"
 ```
+
+## Credits
+This pod is inspired by inspired by @mttkay work https://gist.github.com/mttkay/24881a0ce986f6ec4b4d
 
 ## License
 
