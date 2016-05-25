@@ -3,9 +3,9 @@ import XCTest
 import RxSwift
 import RxPager
 
-// MARK: structs
+// MARK: Page
 
-/// Sample Page Data Struct
+/// a sample Page Data Struct
 struct Page {
   let values: [Int]
   let hasNext: Bool
@@ -14,13 +14,16 @@ struct Page {
 // MARK: globals
 
 /// delay block after `time` seconds
-func delay(time: Double, block: () -> Void) {
+///
+/// - parmeter time: The time to wait in seconds
+/// - paramete block: The block to executed after the delay
+func delay(time: NSTimeInterval, block: () -> Void) {
   dispatch_after(
     dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC))),
     dispatch_get_main_queue(), block)
 }
 
-/// page factory helper
+/// create a `Page` pager that emits 4 pages and complete
 func createPager() -> Pager<Page> {
   return Pager(
     paging: { (previousPage: Page?) -> Observable<Page> in
@@ -36,6 +39,8 @@ func createPager() -> Pager<Page> {
   )
 }
 
+/// create a `Page` pager that emits 4 pages and complete
+/// each page is emitted asynchronously after a 0.1s delay
 func createASyncPager() -> Pager<Page> {
   return Pager(
     paging: { (previousPage: Page?) -> Observable<Page> in
@@ -51,17 +56,23 @@ func createASyncPager() -> Pager<Page> {
   )
 }
 
+// MARK: Tests
+
 class Tests: XCTestCase {
 
+  /// stream dispose bag
   var disposeBag = DisposeBag()
 
   override func tearDown() {
+    // dispose current `disposeBag` and create a new one
     disposeBag = DisposeBag()
   }
 
+  /// ensure that the first page is emitted
   func testGetFirstPage() {
     let expectation = expectationWithDescription("get first page")
     let pager = createPager()
+
     pager.page
       .subscribeNext { page in
         XCTAssertEqual(page.values, [1, 2, 3])
@@ -72,6 +83,7 @@ class Tests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
+  /// ensure that the second page is emitted
   func testGetSecondPage() {
     let expectation = expectationWithDescription("get first two page")
     let pager = createPager()
@@ -88,6 +100,7 @@ class Tests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
+  /// ensure that the third page is emitted
   func testGetThirdPage() {
     let expectation = expectationWithDescription("get first three page")
     let pager = createPager()
@@ -104,6 +117,7 @@ class Tests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
+  /// ensure that the completed event is emitted
   func testCompletePager() {
     let expectation = expectationWithDescription("get completed event")
     let pager = createPager()
@@ -121,6 +135,7 @@ class Tests: XCTestCase {
     waitForExpectationsWithTimeout(1, handler: nil)
   }
 
+  /// ensure next is a noop when called more than once between two pages emission
   func testCantNextMoreThanOnceBeforeNextPage() {
     let expectation = expectationWithDescription("get first two page")
     let pager = createASyncPager()
@@ -135,7 +150,6 @@ class Tests: XCTestCase {
       }
       .addDisposableTo(disposeBag)
 
-    pager.next()
     pager.next() // should be a noop
     pager.next() // should be a noop
     waitForExpectationsWithTimeout(1, handler: nil)

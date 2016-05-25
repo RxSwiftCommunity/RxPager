@@ -6,15 +6,26 @@ import RxPager
 
 class PagerTableViewController: UITableViewController {
 
-  var dataSource: [Int] = [] {
+  /// Observable disposeBag
+  private let disposeBag = DisposeBag()
+
+  /// tableview dataSource
+  private var dataSource: [Int] = [] {
     didSet {
       tableView.reloadData()
     }
   }
-  
-  let disposeBag = DisposeBag()
-  weak var activityIndicator: UIActivityIndicatorView?
 
+  /// loading indicator, placed in the tableView footer 
+  /// the indicator animate until the page stream complete
+  private lazy var activityIndicator: UIActivityIndicatorView = {
+    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+    activityIndicator.frame = CGRect( origin: CGPointZero, size: CGSize(width: 44, height: 100))
+    self.tableView.tableFooterView = activityIndicator
+    return activityIndicator
+  }()
+
+  /// Pager, that emit pages of [Int], and complete when last emitted int is greater than 100
   let pager: Pager<[Int]> = Pager(
     paging: { (previousPage: [Int]?) -> Observable<[Int]> in
       let last = previousPage?.last ?? 0
@@ -30,25 +41,22 @@ class PagerTableViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    // setup activity indicator
-    let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-    activityIndicator.frame = CGRect( origin: CGPointZero, size: CGSize(width: 44, height: 100))
-    tableView.tableFooterView = activityIndicator
-    self.activityIndicator = activityIndicator
+    // start activity indicator
+    activityIndicator.startAnimating()
 
-    // setup page subscription
+    // scan, and update dataSource
     pager.page
       .scan([Int](), accumulator: +)
       .subscribeNext { [weak self] in
-        self?.activityIndicator?.startAnimating()
         self?.dataSource = $0
       }
       .addDisposableTo(disposeBag)
 
+    // update dataSource when the stream complete
     pager
       .page
-      .subscribeCompleted {
-        self.activityIndicator?.stopAnimating()
+      .subscribeCompleted { [weak self] in
+        self?.activityIndicator.stopAnimating()
       }
       .addDisposableTo(disposeBag)
   }

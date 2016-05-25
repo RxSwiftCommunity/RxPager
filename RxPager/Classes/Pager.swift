@@ -15,13 +15,21 @@ final public class Pager<T> {
 
   // MARK: Private properties
 
+  /// The paging function
   private let paging: Paging
+
+  /// The hasNext function
   private let hasNext: HasNext
+
+  /// The publishSubject used to push new pages in the page stream
   private let pages: PublishSubject<T?>
+
+  /// delegate function called by `next()`
   private lazy var nextDelegate: () -> Void = { _ in self.pages.onNext(nil) }
 
   // MARK: Public properties
 
+  /// The page stream
   public private(set) lazy var page: Observable<T> = {
     let paging = self.paging
 
@@ -59,6 +67,8 @@ final public class Pager<T> {
 
   // MARK: public methods
 
+  /// next will trigger a new page emission
+  /// note that next is  a noop if called more than once before a new page emission
   public func next() {
     nextDelegate()
   }
