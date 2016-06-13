@@ -13,19 +13,30 @@ import RxPager
 
 typealias Page = [Int]
 
-let pager: Pager<Page> = Pager(
-  
-  // paging function, take previous Page, return Observable<Page>
-  paging: { (previousPage: Page?) -> Observable<Page> in
-    let last = previousPage?.last ?? 0
-    return Observable.just([last + 1, last + 2, last + 3])
-  },
-  
-  // return true if there are more pages to be emitted
-  hasNext: { (page: Page?) -> Bool in
-    return page?.last < 10 // arbitrary condition for the demo
-  }
+// paging function, take previous Page, return Observable<Page>
+let paging = { (previousPage: Page?) -> Observable<Page> in
+  let last = previousPage?.last ?? 0
+  return Observable.just([last + 1, last + 2, last + 3])
+}
+
+// return true if there are more pages to be emitted
+let hasNext = { (page: Page?) -> Bool in
+  return page?.last < 10 // arbitrary condition for the demo
+}
+
+
+// create the pager
+let trigger = PublishSubject<Voi>()
+let pager = (
+ page: rx_pager(paging: paging, hasNext: hasNext, trigger, trigger)
+ next: { _ in trigger.onNext() }
 )
+
+// or using the wrapper Pager class
+// let pager: Pager<Page> = Pager(
+//   paging: paging,  
+//   hasNext: hasNext
+// )
 
 pager
   .page
@@ -39,14 +50,31 @@ pager.next() // print [1, 2 ,3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 ```
 
+
+
 ## Api
 
-### `Pager<Page>(paging: Paging, hasNext: HasNext)`
+### `rx_pager<T>(paging paging: Paging, hasNext: HasNext, trigger: Observable<Void>)`
+global function to create a pager Observable stream 
+
 #### `paging: (Page?) -> Observable<Page>`
 Take the previous page and return the next Observable<Page>
 
 #### `hasNext: (Page?) -> Observable<Page>>`
 Take the last page and return true if there are more pages to load
+
+#### `trigger: Observable<Void>`
+Trigger Observable stream used to push the next page
+
+
+### `Pager<Page>(paging: Paging, hasNext: HasNext)`
+simple wrapper class that wrap the page stream and the trigger
+
+#### `Pager.page: Observable<T>`
+The page stream
+
+#### `Pager.next: () -> Void`
+Closure used to trigger next page
 
 ## Example
 

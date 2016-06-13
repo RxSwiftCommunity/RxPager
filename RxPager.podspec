@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = "RxPager"
-s.version          = "0.2.0"
+s.version          = "0.3.0"
 s.summary          = "A simple Pager class fo Rx."
 s.homepage         = "https://github.com/pgherveou/RxPager"
 s.license          = 'MIT'

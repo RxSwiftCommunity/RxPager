@@ -24,35 +24,57 @@ func delay(time: NSTimeInterval, block: () -> Void) {
 }
 
 /// create a `Page` pager that emits 4 pages and complete
-func createPager() -> Pager<Page> {
-  return Pager(
-    paging: { (previousPage: Page?) -> Observable<Page> in
-      let last = previousPage?.values.last ?? 0
-      return Observable.just(Page(
-        values: [last + 1, last + 2, last + 3],
-        hasNext: last + 3 < 10)
-      )
-    },
-    hasNext: { (page: Page?) -> Bool in
-      return page?.hasNext == true
-    }
+func createPager() -> (page: Observable<Page>, next: () -> Void) {
+
+  let paging = { (previousPage: Page?) -> Observable<Page> in
+    let last = previousPage?.values.last ?? 0
+    return Observable.just(Page(
+      values: [last + 1, last + 2, last + 3],
+      hasNext: last + 3 < 10)
+    )
+  }
+
+  let hasNext = { (page: Page?) -> Bool in
+    return page?.hasNext == true
+  }
+
+  let trigger = PublishSubject<Void>()
+
+  return (
+    page: rx_pager(
+      paging: paging,
+      hasNext: hasNext,
+      trigger: trigger.asObservable()
+    ),
+    next: { trigger.onNext() }
   )
 }
 
 /// create a `Page` pager that emits 4 pages and complete
 /// each page is emitted asynchronously after a 0.1s delay
-func createASyncPager() -> Pager<Page> {
-  return Pager(
-    paging: { (previousPage: Page?) -> Observable<Page> in
-      let last = previousPage?.values.last ?? 0
-      return Observable.just(Page(
-        values: [last + 1, last + 2, last + 3],
-        hasNext: last + 3 < 10)
-        ).delaySubscription(0.1, scheduler: MainScheduler.instance)
-    },
-    hasNext: { (page: Page?) -> Bool in
-      return page?.hasNext == true
-    }
+func createASyncPager() -> (page: Observable<Page>, next: () -> Void) {
+
+  let paging = { (previousPage: Page?) -> Observable<Page> in
+    let last = previousPage?.values.last ?? 0
+    return Observable.just(Page(
+      values: [last + 1, last + 2, last + 3],
+      hasNext: last + 3 < 10)
+      ).delaySubscription(0.1, scheduler: MainScheduler.instance)
+  }
+
+  let hasNext = { (page: Page?) -> Bool in
+    return page?.hasNext == true
+  }
+
+  let trigger = PublishSubject<Void>()
+
+  return (
+    page: rx_pager(
+      paging: paging,
+      hasNext: hasNext,
+      trigger: trigger.asObservable()
+    ),
+    next: { trigger.onNext() }
   )
 }
 
@@ -122,7 +144,13 @@ class Tests: XCTestCase {
     let expectation = expectationWithDescription("get completed event")
     let pager = createPager()
 
-    pager.page
+    let sharedPager = pager.page.shareReplay(1)
+
+    sharedPager
+      .subscribeNext { print($0) }
+      .addDisposableTo(disposeBag)
+
+    sharedPager
       .subscribeCompleted { _ in
         expectation.fulfill()
       }
