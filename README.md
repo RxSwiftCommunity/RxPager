@@ -17,13 +17,13 @@ let pager: Pager<Page> = Pager(
   
   // paging function, take previous Page, return Observable<Page>
   paging: { (previousPage: Page?) -> Observable<Page> in
-    let last = previousPage?.values.last ?? 0
+    let last = previousPage?.last ?? 0
     return Observable.just([last + 1, last + 2, last + 3])
   },
   
   // return true if there are more pages to be emitted
   hasNext: { (page: Page?) -> Bool in
-    return page?.last < 10
+    return page?.last < 10 // arbitrary condition for the demo
   }
 )
 
