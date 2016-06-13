@@ -182,5 +182,4 @@ class Tests: XCTestCase {
     pager.next() // should be a noop
     waitForExpectationsWithTimeout(1, handler: nil)
   }
-  
 }

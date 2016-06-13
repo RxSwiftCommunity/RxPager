@@ -1,9 +1,5 @@
 import RxSwift
 
-// MARK: globals
-
-private var noOp: () -> Void = { _ in }
-
 public func rx_pager<T>(
   paging paging: (T?) -> Observable<T>,
          hasNext: (T?) -> Bool,
@@ -24,23 +20,24 @@ public func rx_pager<T>(
   return next(nil)
 }
 
-
 // MARK: Pager
 
 final public class Pager<T> {
 
-  // closure to trigger next page
+  /// closure to trigger next page
   public let next: () -> Void
 
-  // page stream
+  /// page stream
   public let page: Observable<T>
 
   public init(
     paging paging: (T?) -> Observable<T>,
     hasNext: (T?) -> Bool) {
-    let trigger = PublishSubject<Void>()
 
+    // create next trigger with a PublishSubject
+    let trigger = PublishSubject<Void>()
     next = { _ in trigger.onNext() }
+
     self.page = rx_pager(
       paging: paging,
       hasNext: hasNext,

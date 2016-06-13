@@ -24,9 +24,8 @@ let hasNext = { (page: Page?) -> Bool in
   return page?.last < 10 // arbitrary condition for the demo
 }
 
-
 // create the pager
-let trigger = PublishSubject<Voi>()
+let trigger = PublishSubject<Void>()
 let pager = (
  page: rx_pager(paging: paging, hasNext: hasNext, trigger, trigger)
  next: { _ in trigger.onNext() }
