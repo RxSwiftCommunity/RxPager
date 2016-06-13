@@ -1,6 +1,6 @@
 # RxPager
 
-[![CI Status](http://img.shields.io/travis/Pierre-Guillaume Herveou/RxPager.svg?style=flat)](https://travis-ci.org/Pierre-Guillaume Herveou/RxPager)
+[![CI Status](http://img.shields.io/travis/pgherveou/RxPager.svg?style=flat)](https://travis-ci.org/pgherveou/RxPager)
 [![Version](https://img.shields.io/cocoapods/v/RxPager.svg?style=flat)](http://cocoapods.org/pods/RxPager)
 [![License](https://img.shields.io/cocoapods/l/RxPager.svg?style=flat)](http://cocoapods.org/pods/RxPager)
 [![Platform](https://img.shields.io/cocoapods/p/RxPager.svg?style=flat)](http://cocoapods.org/pods/RxPager)
