@@ -11,7 +11,9 @@
 import RxSwift
 import RxPager
 
-let pager: Pager<[Int]> = Pager(
+typealias Page = [Int]
+
+let pager: Pager<Page> = Pager(
   
   // paging function, take previous Page, return Observable<Page>
   paging: { (previousPage: Page?) -> Observable<Page> in
@@ -20,14 +22,14 @@ let pager: Pager<[Int]> = Pager(
   },
   
   // return true if there are more pages to be emitted
-  hasNext: { (page: [Int]?) -> Bool in
+  hasNext: { (page: Page?) -> Bool in
     return page?.last < 10
   }
 )
 
 pager
   .page
-  .scan([Int]()) { $0 + $1 }
+  .scan(Page()) { $0 + $1 }
   .subscribeNext { print($0) } 
 
 // print [1, 2 ,3]
