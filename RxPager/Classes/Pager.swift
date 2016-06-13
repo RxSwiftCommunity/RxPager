@@ -2,7 +2,7 @@ import RxSwift
 
 public func rx_pager<T>(
   paging paging: (T?) -> Observable<T>,
-         hasNext: (T?) -> Bool,
+         hasNext: (T) -> Bool,
          trigger: Observable<Void>) -> Observable<T> {
 
   // get next page and recurse
@@ -31,8 +31,8 @@ final public class Pager<T> {
   public let page: Observable<T>
 
   public init(
-    paging paging: (T?) -> Observable<T>,
-    hasNext: (T?) -> Bool) {
+    paging: (T?) -> Observable<T>,
+    hasNext: (T) -> Bool) {
 
     // create next trigger with a PublishSubject
     let trigger = PublishSubject<Void>()

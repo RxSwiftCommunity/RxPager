@@ -20,7 +20,7 @@ let paging = { (previousPage: Page?) -> Observable<Page> in
 }
 
 // return true if there are more pages to be emitted
-let hasNext = { (page: Page?) -> Bool in
+let hasNext = { (page: Page) -> Bool in
   return page?.last < 10 // arbitrary condition for the demo
 }
 

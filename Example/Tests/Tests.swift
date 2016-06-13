@@ -34,8 +34,8 @@ func createPager() -> (page: Observable<Page>, next: () -> Void) {
     )
   }
 
-  let hasNext = { (page: Page?) -> Bool in
-    return page?.hasNext == true
+  let hasNext = { (page: Page) -> Bool in
+    return page.hasNext == true
   }
 
   let trigger = PublishSubject<Void>()
@@ -62,8 +62,8 @@ func createASyncPager() -> (page: Observable<Page>, next: () -> Void) {
       ).delaySubscription(0.1, scheduler: MainScheduler.instance)
   }
 
-  let hasNext = { (page: Page?) -> Bool in
-    return page?.hasNext == true
+  let hasNext = { (page: Page) -> Bool in
+    return page.hasNext == true
   }
 
   let trigger = PublishSubject<Void>()
