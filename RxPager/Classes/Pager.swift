@@ -68,7 +68,7 @@ final public class Pager<T> {
   // MARK: public methods
 
   /// next will trigger a new page emission
-  /// note that next is  a noop if called more than once before a new page emission
+  /// note that next is a noop if called more than once before a new page emission
   public func next() {
     nextDelegate()
   }
