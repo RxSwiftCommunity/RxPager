@@ -5,6 +5,7 @@
 language: objective-c
 podfile: Example/Podfile
 before_install:
+  - rvm use system
   - gem install cocoapods # Since Travis is not always on latest version
   - pod install --project-directory=Example
 script:
