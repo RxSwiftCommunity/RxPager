@@ -1,11 +1,10 @@
 use_frameworks!
 
 target 'RxPager_Example' do
+  pod 'RxCocoa'
   pod 'RxPager', :path => '../'
+end
 
-  target 'RxPager_Tests' do
-    inherit! :search_paths
-
-    
-  end
+target 'RxPager_Tests' do
+  pod 'RxPager', :path => '../'
 end
