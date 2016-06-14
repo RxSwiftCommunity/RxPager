@@ -5,9 +5,18 @@
 language: objective-c
 podfile: Example/Podfile
 before_install:
+  - env
+  - locale
   - rvm use system
-  - gem install cocoapods # Since Travis is not always on latest version
-  - pod install --project-directory=Example
+  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
+  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
+  - pod --version
+  - pod setup --silent
+  - pod repo update --silent
+  - xcpretty --version
+  - xcodebuild -version
+  - xcodebuild -showsdks
 script:
-  - set -o pipefail && xcodebuild test -workspace Example/RxPager.xcworkspace -scheme RxPager-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty
+  - set -o pipefail
   - pod lib lint
+  - xcodebuild test -workspace Example/RxPager.xcworkspace -scheme RxPager-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty
