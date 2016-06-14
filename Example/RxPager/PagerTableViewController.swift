@@ -7,7 +7,9 @@ import RxPager
 
 private let startLoadingOffset: CGFloat = 20.0
 private func isNearTheBottomEdge(contentOffset: CGPoint, _ tableView: UITableView) -> Bool {
-  return contentOffset.y + tableView.frame.size.height + startLoadingOffset > tableView.contentSize.height
+  return contentOffset.y +
+    tableView.frame.size.height +
+    startLoadingOffset > tableView.contentSize.height
 }
 
 // MARK: PagerTableViewController
@@ -38,7 +40,10 @@ class PagerTableViewController: UITableViewController {
   /// the indicator animate until the page stream complete
   private lazy var activityIndicator: UIActivityIndicatorView = {
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
-    activityIndicator.frame = CGRect( origin: CGPointZero, size: CGSize(width: 44, height: 100))
+    activityIndicator.frame = CGRect(
+      origin: CGPoint.zero,
+      size: CGSize(width: 44, height: 100)
+    )
     self.tableView.tableFooterView = activityIndicator
     return activityIndicator
   }()
@@ -87,10 +92,10 @@ class PagerTableViewController: UITableViewController {
     return dataSource.count
   }
 
-  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+  override func tableView(tableView: UITableView,
+                          cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
     guard let cell = tableView.dequeueReusableCellWithIdentifier("pagerCell") else { fatalError() }
     cell.textLabel?.text = "Row \(dataSource[indexPath.row])"
     return cell
-  }  
+  }
 }
-

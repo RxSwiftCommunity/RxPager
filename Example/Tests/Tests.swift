@@ -15,8 +15,8 @@ struct Page {
 
 /// delay block after `time` seconds
 ///
-/// - parmeter time: The time to wait in seconds
-/// - paramete block: The block to executed after the delay
+/// - parameter time: The time to wait in seconds
+/// - parameter block: The block to executed after the delay
 func delay(time: NSTimeInterval, block: () -> Void) {
   dispatch_after(
     dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC))),
@@ -24,8 +24,9 @@ func delay(time: NSTimeInterval, block: () -> Void) {
 }
 
 /// create a `Page` pager that emits 4 pages and complete
+///
+/// - returns: a tuple with the pager and the trigger
 func createPager() -> (page: Observable<Page>, next: () -> Void) {
-
   let paging = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
     return Observable.just(Page(
@@ -52,6 +53,8 @@ func createPager() -> (page: Observable<Page>, next: () -> Void) {
 
 /// create a `Page` pager that emits 4 pages and complete
 /// each page is emitted asynchronously after a 0.1s delay
+///
+/// - returns: a tuple with the pager and the trigger
 func createASyncPager() -> (page: Observable<Page>, next: () -> Void) {
 
   let paging = { (previousPage: Page?) -> Observable<Page> in

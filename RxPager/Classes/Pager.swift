@@ -1,5 +1,11 @@
 import RxSwift
 
+/// create a Pager Observable
+///
+/// - parameter paging: The paging function used to generate each page
+/// - parameter hasNext: The hasNext function to define if there are more pages
+/// - parameter trigger: The trigger Observable used to trigger next page load
+/// - returns: the page Observable
 public func rx_pager<T>(
   paging paging: (T?) -> Observable<T>,
          hasNext: (T) -> Bool,
@@ -22,26 +28,25 @@ public func rx_pager<T>(
 
 // MARK: Pager
 
+/// A wrapper class that encapsulate both the Pager Observable and the trigger
 final public class Pager<T> {
-
-  /// closure to trigger next page
-  public let next: () -> Void
 
   /// page stream
   public let page: Observable<T>
 
-  public init(
-    paging: (T?) -> Observable<T>,
-    hasNext: (T) -> Bool) {
+  // trigger used to call next page
+  private let trigger = PublishSubject<Void>()
 
-    // create next trigger with a PublishSubject
-    let trigger = PublishSubject<Void>()
-    next = { _ in trigger.onNext() }
-
-    self.page = rx_pager(
+  public init(paging: (T?) -> Observable<T>, hasNext: (T) -> Bool) {
+    page = rx_pager(
       paging: paging,
       hasNext: hasNext,
       trigger: trigger.asObservable()
     )
+  }
+
+  /// trigger the next page
+  public func next() {
+    trigger.onNext()
   }
 }

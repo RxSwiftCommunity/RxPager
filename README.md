@@ -22,7 +22,7 @@ let paging = { (previousPage: Page?) -> Observable<Page> in
 
 // return true if there are more pages to be emitted
 let hasNext = { (page: Page) -> Bool in
-  return page.last < 10 // arbitrary condition for the demo
+  return page.last < 10 // arbitrary condition for this example
 }
 
 // create the pager
@@ -50,10 +50,12 @@ pager.next() // print [1, 2 ,3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 ```
 
+See [Demo](https://github.com/pgherveou/RxPager/blob/master/Example/RxPager/PagerTableViewController.swift) for more examples
+
 ## Api
 
 ### `rx_pager<T>(paging paging: Paging, hasNext: HasNext, trigger: Observable<Void>)`
-global function to create a pager Observable stream 
+global function to create a pager Observable stream
 
 #### `paging: (Page?) -> Observable<Page>`
 Take the previous page and return the next Observable<Page>
@@ -91,6 +93,7 @@ pod "RxPager"
 
 ## Credits
 This pod is inspired by inspired by @mttkay work https://gist.github.com/mttkay/24881a0ce986f6ec4b4d
+and was refactored using ideas discussed here https://github.com/RxSwiftCommunity/RxSwiftExt/issues/30
 
 ## License
 
