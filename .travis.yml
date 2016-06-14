@@ -3,20 +3,11 @@
 # * https://github.com/supermarin/xcpretty#usage
 
 language: objective-c
-podfile: Example/Podfile
+osx_image: xcode7.3
+xcode_sdk: iphonesimulator9.3
 before_install:
-  - env
-  - locale
-  - rvm use system
-  - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
-  - gem install xcpretty --no-rdoc --no-ri --no-document --quiet
-  - pod --version
-  - pod setup --silent
-  - pod repo update --silent
-  - xcpretty --version
-  - xcodebuild -version
-  - xcodebuild -showsdks
+  - gem install cocoapods
+  - pod install --project-directory=Example
 script:
-  - set -o pipefail
+  - set -o pipefail && xcodebuild test -workspace Example/RxPager.xcworkspace -scheme RxPager-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty
   - pod lib lint
-  - xcodebuild test -workspace Example/RxPager.xcworkspace -scheme RxPager-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty
