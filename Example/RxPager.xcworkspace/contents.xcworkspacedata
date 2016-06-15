@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../RxPager.playground">
+   </FileRef>
+   <FileRef
       location = "group:RxPager.xcodeproj">
    </FileRef>
    <FileRef

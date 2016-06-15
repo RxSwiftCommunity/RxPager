@@ -32,7 +32,7 @@ let pager: (page: Observable<Page>, next: Callback) = (
   next: { _ in trigger.onNext() }
 )
 
-// or using the wrapper Pager class
+// or using Pager struct directly
 // let pager: Pager<Page> = Pager(
 //   paging: paging,
 //   hasNext: hasNext
@@ -77,7 +77,7 @@ Closure used to trigger next page
 
 ## Example
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+To run the example project, or run the playground, clone the repo, and run `pod install` from the Example directory first.
 
 ## Requirements
 
