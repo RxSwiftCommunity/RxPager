@@ -54,7 +54,7 @@ See [Demo](https://github.com/pgherveou/RxPager/blob/master/Example/RxPager/Page
 
 ## Api
 
-### `rx_pager<T>(paging paging: Paging, hasNext: HasNext, trigger: Observable<Void>)`
+### `rx_pager<T>(paging:hasNext:trigger)`
 global function to create a pager Observable stream
 
 #### `paging: (Page?) -> Observable<Page>`
@@ -66,14 +66,13 @@ Take the last page and return true if there are more pages to load
 #### `trigger: Observable<Void>`
 Trigger Observable stream used to push the next page
 
+### `Pager<Page>(paging:hasNext)`
+simple struct that wrap the page stream and the trigger
 
-### `Pager<Page>(paging: Paging, hasNext: HasNext)`
-simple wrapper class that wrap the page stream and the trigger
-
-#### `Pager.page: Observable<T>`
+#### `pager.page: Observable<T>`
 The page stream
 
-#### `Pager.next: () -> Void`
+#### `pager.next: () -> Void`
 Closure used to trigger next page
 
 ## Example

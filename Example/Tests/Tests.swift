@@ -26,7 +26,7 @@ func delay(time: NSTimeInterval, block: () -> Void) {
 /// create a `Page` pager that emits 4 pages and complete
 ///
 /// - returns: a tuple with the pager and the trigger
-func createPager() -> (page: Observable<Page>, next: () -> Void) {
+func createPager() -> Pager<Page> {
   let paging = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
     return Observable.just(Page(
@@ -39,15 +39,9 @@ func createPager() -> (page: Observable<Page>, next: () -> Void) {
     return page.hasNext == true
   }
 
-  let trigger = PublishSubject<Void>()
-
-  return (
-    page: rx_pager(
-      paging: paging,
-      hasNext: hasNext,
-      trigger: trigger.asObservable()
-    ),
-    next: { trigger.onNext() }
+  return Pager(
+    paging: paging,
+    hasNext: hasNext
   )
 }
 
@@ -55,7 +49,7 @@ func createPager() -> (page: Observable<Page>, next: () -> Void) {
 /// each page is emitted asynchronously after a 0.1s delay
 ///
 /// - returns: a tuple with the pager and the trigger
-func createASyncPager() -> (page: Observable<Page>, next: () -> Void) {
+func createASyncPager() -> Pager<Page> {
 
   let paging = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
@@ -69,15 +63,9 @@ func createASyncPager() -> (page: Observable<Page>, next: () -> Void) {
     return page.hasNext == true
   }
 
-  let trigger = PublishSubject<Void>()
-
-  return (
-    page: rx_pager(
-      paging: paging,
-      hasNext: hasNext,
-      trigger: trigger.asObservable()
-    ),
-    next: { trigger.onNext() }
+  return Pager(
+    paging: paging,
+    hasNext: hasNext
   )
 }
 

@@ -29,7 +29,7 @@ public func rx_pager<T>(
 // MARK: Pager
 
 /// A wrapper class that encapsulate both the Pager Observable and the trigger
-final public class Pager<T> {
+public struct Pager<T> {
 
   /// page stream
   public let page: Observable<T>
