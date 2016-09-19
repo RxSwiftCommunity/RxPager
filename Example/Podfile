@@ -1,10 +1,11 @@
 use_frameworks!
 
 target 'RxPager_Example' do
-  pod 'RxCocoa'
+  pod 'RxCocoa', '~> 3.0.0-beta.1'
   pod 'RxPager', :path => '../'
 end
 
 target 'RxPager_Tests' do
+  pod 'RxCocoa', '~> 3.0.0-beta.1'
   pod 'RxPager', :path => '../'
 end

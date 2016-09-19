@@ -2,6 +2,7 @@ import UIKit
 import XCTest
 import RxSwift
 import RxPager
+import RxCocoa
 
 // MARK: Page
 
@@ -17,17 +18,16 @@ struct Page {
 ///
 /// - parameter time: The time to wait in seconds
 /// - parameter block: The block to executed after the delay
-func delay(time: NSTimeInterval, block: () -> Void) {
-  dispatch_after(
-    dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC))),
-    dispatch_get_main_queue(), block)
+func delay(_ time: TimeInterval, block: @escaping () -> Void) {
+  DispatchQueue.main.asyncAfter(
+    deadline: DispatchTime.now() + Double(Int64(time * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
 }
 
 /// create a `Page` pager that emits 4 pages and complete
 ///
 /// - returns: a tuple with the pager and the trigger
 func createPager() -> Pager<Page> {
-  let paging = { (previousPage: Page?) -> Observable<Page> in
+  let makePage = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
     return Observable.just(Page(
       values: [last + 1, last + 2, last + 3],
@@ -40,7 +40,7 @@ func createPager() -> Pager<Page> {
   }
 
   return Pager(
-    paging: paging,
+    nextPage: makePage,
     hasNext: hasNext
   )
 }
@@ -51,7 +51,7 @@ func createPager() -> Pager<Page> {
 /// - returns: a tuple with the pager and the trigger
 func createASyncPager() -> Pager<Page> {
 
-  let paging = { (previousPage: Page?) -> Observable<Page> in
+  let nextPage = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
     return Observable.just(Page(
       values: [last + 1, last + 2, last + 3],
@@ -64,7 +64,7 @@ func createASyncPager() -> Pager<Page> {
   }
 
   return Pager(
-    paging: paging,
+    nextPage: nextPage,
     hasNext: hasNext
   )
 }
@@ -83,94 +83,120 @@ class Tests: XCTestCase {
 
   /// ensure that the first page is emitted
   func testGetFirstPage() {
-    let expectation = expectationWithDescription("get first page")
+    let expectation = self.expectation(description: "get first page")
     let pager = createPager()
 
     pager.page
-      .subscribeNext { page in
+      .subscribe(onNext: { page in
         XCTAssertEqual(page.values, [1, 2, 3])
         expectation.fulfill()
-      }
+      })
       .addDisposableTo(disposeBag)
 
-    waitForExpectationsWithTimeout(1, handler: nil)
+    waitForExpectations(timeout: 1, handler: nil)
   }
 
   /// ensure that the second page is emitted
   func testGetSecondPage() {
-    let expectation = expectationWithDescription("get first two page")
+    let expectation = self.expectation(description: "get first two page")
     let pager = createPager()
 
     pager.page
       .skip(1)
-      .subscribeNext { page in
+      .subscribe(onNext: { page in
         XCTAssertEqual(page.values, [4, 5, 6])
         expectation.fulfill()
-      }
+      })
       .addDisposableTo(disposeBag)
 
     pager.next()
-    waitForExpectationsWithTimeout(1, handler: nil)
+    waitForExpectations(timeout: 1, handler: nil)
   }
 
   /// ensure that the third page is emitted
   func testGetThirdPage() {
-    let expectation = expectationWithDescription("get first three page")
+    let expectation = self.expectation(description: "get first three page")
     let pager = createPager()
 
     pager.page
       .skip(2)
-      .subscribeNext { page in
+      .subscribe(onNext: { page in
         XCTAssertEqual(page.values, [7, 8, 9])
         expectation.fulfill()
-      }.addDisposableTo(disposeBag)
+      }).addDisposableTo(disposeBag)
 
     pager.next()
     pager.next()
-    waitForExpectationsWithTimeout(1, handler: nil)
+    waitForExpectations(timeout: 1, handler: nil)
   }
 
   /// ensure that the completed event is emitted
   func testCompletePager() {
-    let expectation = expectationWithDescription("get completed event")
+    let expectation = self.expectation(description: "get completed event")
     let pager = createPager()
 
-    let sharedPager = pager.page.shareReplay(1)
-
-    sharedPager
-      .subscribeNext { print($0) }
-      .addDisposableTo(disposeBag)
-
-    sharedPager
-      .subscribeCompleted { _ in
-        expectation.fulfill()
-      }
+    pager.page
+      .subscribe(
+        onCompleted: { _ in expectation.fulfill() }
+      )
       .addDisposableTo(disposeBag)
 
     // starts with [1, 2 ,3]
     pager.next() // [4, 5, 6]
     pager.next() // [7, 8, 9]
     pager.next() // [10, 11, 12], completed
-    waitForExpectationsWithTimeout(1, handler: nil)
+    waitForExpectations(timeout: 1, handler: nil)
   }
 
   /// ensure next is a noop when called more than once between two pages emission
   func testCantNextMoreThanOnceBeforeNextPage() {
-    let expectation = expectationWithDescription("get first two page")
+    let expectation = self.expectation(description: "get first two page")
     let pager = createASyncPager()
 
     pager.page
-      .subscribeNext { page in
+      .subscribe(onNext: { page in
         // should only be called once
         XCTAssertEqual(page.values, [1, 2, 3])
 
         // wait for non event and fulfill
         delay(0.2) { expectation.fulfill() }
-      }
+      })
       .addDisposableTo(disposeBag)
 
     pager.next() // should be a noop
     pager.next() // should be a noop
-    waitForExpectationsWithTimeout(1, handler: nil)
+    waitForExpectations(timeout: 1, handler: nil)
+  }
+
+  func testPageFromSequence() {
+    var pages: [[Int]] = []
+    let arr = Array(0...10)
+    let expected = [[0, 1], [2, 3], [4, 5], [6, 7], [8, 9], [10]]
+    let expectation = self.expectation(description: "get pages from sequence")
+
+    let trigger = PublishSubject<Void>()
+
+    
+    Observable
+      .page(arr, by: 2, when: trigger)
+      .subscribe(
+        onNext: {
+          pages.append($0)
+        },
+        onCompleted: { _ in
+          XCTAssert(pages.count == expected.count)
+          zip(pages, expected).forEach { XCTAssert($0 == $1) }
+          expectation.fulfill()
+        }
+      )
+      .addDisposableTo(disposeBag)
+
+    // start with [0, 1]
+    trigger.onNext() // [2, 3]
+    trigger.onNext() // [4, 5]
+    trigger.onNext() // [6, 7]
+    trigger.onNext() // [8, 9]
+    trigger.onNext() // [10]
+    waitForExpectations(timeout: 1, handler: nil)
   }
 }
