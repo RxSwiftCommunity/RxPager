@@ -27,7 +27,7 @@ func delay(_ time: TimeInterval, block: @escaping () -> Void) {
 ///
 /// - returns: a tuple with the pager and the trigger
 func createPager() -> Pager<Page> {
-  let makePage = { (previousPage: Page?) -> Observable<Page> in
+  let nextPage = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
     return Observable.just(Page(
       values: [last + 1, last + 2, last + 3],
@@ -39,10 +39,7 @@ func createPager() -> Pager<Page> {
     return page.hasNext == true
   }
 
-  return Pager(
-    nextPage: makePage,
-    hasNext: hasNext
-  )
+  return Pager(make: nextPage, while: hasNext)
 }
 
 /// create a `Page` pager that emits 4 pages and complete
@@ -63,10 +60,7 @@ func createASyncPager() -> Pager<Page> {
     return page.hasNext == true
   }
 
-  return Pager(
-    nextPage: nextPage,
-    hasNext: hasNext
-  )
+  return Pager(make: nextPage, while: hasNext)
 }
 
 // MARK: Tests
@@ -108,7 +102,7 @@ class Tests: XCTestCase {
         expectation.fulfill()
       })
       .addDisposableTo(disposeBag)
-
+    
     pager.next()
     waitForExpectations(timeout: 1, handler: nil)
   }

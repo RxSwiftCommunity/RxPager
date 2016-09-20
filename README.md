@@ -8,10 +8,7 @@
 ## Usage
 
 ```swift
-import RxSwift
-import RxPager
-
-// Example 1
+// MARK: Example 1
 
 typealias Page = [Int]
 typealias Callback = () -> Void
@@ -30,7 +27,7 @@ return last < 10 // arbitrary condition for the demo
 
 // create the pager
 let trigger = PublishSubject<Void>()
-let page$ = Observable.page(nextPage: nextPage, hasNext: hasNext, trigger: trigger)
+let page$ = Observable.page(nextPage, while: hasNext, when: trigger)
 let next = trigger.onNext
 
 page$.subscribe(onNext: { print($0) })

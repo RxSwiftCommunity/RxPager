@@ -23,7 +23,7 @@ let hasNext = { (page: Page) -> Bool in
 
 // create the pager
 let trigger = PublishSubject<Void>()
-let page$ = Observable.page(nextPage: nextPage, hasNext: hasNext, trigger: trigger)
+let page$ = Observable.page(make: nextPage, while: hasNext, when: trigger)
 let next = trigger.onNext
 
 page$.subscribe(onNext: { print($0) })
@@ -43,3 +43,5 @@ Observable
 next() // print [4, 5, 6]
 next() // print [4, 5, 6]
 next() // print [10]
+
+

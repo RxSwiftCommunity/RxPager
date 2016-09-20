@@ -50,7 +50,7 @@ class PagerTableViewController: UITableViewController {
 
   /// Pager, that emit pages of [Int], and complete when last emitted int is greater than 100
   private lazy var page: Observable<[Int]> = {
-    func makePage(_ previousPage: [Int]?) -> Observable<[Int]> {
+    func nextPage(_ previousPage: [Int]?) -> Observable<[Int]> {
       let last = previousPage?.last ?? 0
       return Observable
         .just(Array(1...20).map { last + $0 })
@@ -62,11 +62,7 @@ class PagerTableViewController: UITableViewController {
       return last < 100
     }
 
-    return Observable.page(
-      nextPage: makePage,
-      hasNext: hasNext,
-      trigger: self.loadNextPageTrigger
-    )
+    return Observable.page(make: nextPage, while: hasNext, when: self.loadNextPageTrigger)
   }()
 
   override func viewDidLoad() {
