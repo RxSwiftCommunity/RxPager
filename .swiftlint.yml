@@ -1,0 +1,7 @@
+excluded:
+  - Example/Pods/RxSwift
+  - Example/Pods/RxCocoa  
+line_length:
+  - 110
+disabled_rules:
+  - variable_name
