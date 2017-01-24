@@ -19,6 +19,9 @@ class PagerTableViewController: UITableViewController {
     /// Observable disposeBag
     private let disposeBag = DisposeBag()
 
+    /// wether we should show the animating cell or not
+    private var showAnimatingCell = true
+
     /// tableview dataSource
     private var dataSource: [Int] = [] {
         didSet {
@@ -34,18 +37,6 @@ class PagerTableViewController: UITableViewController {
                     ? Observable.just(Void())
                     : Observable.empty()
         }
-    }()
-
-    /// loading indicator, placed in the tableView footer
-    /// the indicator animate until the page stream complete
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .gray)
-        activityIndicator.frame = CGRect(
-            origin: CGPoint.zero,
-            size: CGSize(width: 44, height: 100)
-        )
-        self.tableView.tableFooterView = activityIndicator
-        return activityIndicator
     }()
 
     /// Pager, that emit pages of [Int], and complete when last emitted int is greater than 100
@@ -68,19 +59,17 @@ class PagerTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // start activity indicator
-        activityIndicator.startAnimating()
-
         // scan, and update dataSource
         page
             .scan([Int](), accumulator: +)
             .subscribe(onNext: { [weak self] in self?.dataSource = $0 })
             .addDisposableTo(disposeBag)
 
-        // update dataSource when the stream complete
+        // update dataSource and reset the animating flag, when the stream complete
         page
-            .subscribe(onCompleted: {
-                [weak self] in self?.activityIndicator.stopAnimating()
+            .subscribe(onCompleted: { [weak self] in
+                self?.showAnimatingCell = false
+                self?.tableView.reloadData()
             })
             .addDisposableTo(disposeBag)
     }
@@ -88,13 +77,20 @@ class PagerTableViewController: UITableViewController {
     // MARK: UITableViewController methods
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource.count
+        return dataSource.count + (showAnimatingCell ? 1 : 0)
     }
 
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "pagerCell") else { fatalError() }
-        cell.textLabel?.text = "Row \(dataSource[(indexPath as NSIndexPath).row])"
-        return cell
+        let cell: UITableViewCell?
+
+        if showAnimatingCell && indexPath.row == dataSource.count {
+            cell = tableView.dequeueReusableCell(withIdentifier: "loadingCell")
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: "pagerCell")
+            cell?.textLabel?.text = "Row \(dataSource[(indexPath as NSIndexPath).row])"
+        }
+
+        return cell!
     }
 }

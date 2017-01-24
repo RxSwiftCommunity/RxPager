@@ -35,6 +35,23 @@
                                     </subviews>
                                 </tableViewCellContentView>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="loadingCell" rowHeight="44" id="kIM-6d-sG5">
+                                <rect key="frame" x="0.0" y="72" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kIM-6d-sG5" id="jFw-Ha-cgL">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="orK-f5-nt4">
+                                            <rect key="frame" x="150" y="12" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="orK-f5-nt4" firstAttribute="centerY" secondItem="jFw-Ha-cgL" secondAttribute="centerY" id="8Jt-Cg-hpK"/>
+                                        <constraint firstItem="orK-f5-nt4" firstAttribute="centerX" secondItem="jFw-Ha-cgL" secondAttribute="centerX" id="JW4-3o-9j7"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
                         </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="UZh-qI-N1W" id="LUv-Mu-ivg"/>
@@ -45,7 +62,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9H0-ta-VYi" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1143" y="450"/>
+            <point key="canvasLocation" x="1141.875" y="450"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="YXV-hw-MIT">
