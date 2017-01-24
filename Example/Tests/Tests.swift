@@ -14,18 +14,19 @@ struct Page {
 
 // MARK: globals
 
-/// delay block after `time` seconds
+/// Delay block after `time` seconds.
 ///
-/// - parameter time: The time to wait in seconds
-/// - parameter block: The block to executed after the delay
+/// - Parameters:
+///   - time: The time to wait in seconds.
+///   - block: The block to executed after the delay.
 func delay(_ time: TimeInterval, block: @escaping () -> Void) {
   DispatchQueue.main.asyncAfter(
-    deadline: DispatchTime.now() + Double(Int64(time * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
+    deadline: .now() + Double(Int64(time * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: block)
 }
 
-/// create a `Page` pager that emits 4 pages and complete
+/// Create a `Page` pager that emits 4 pages and complete.
 ///
-/// - returns: a tuple with the pager and the trigger
+/// - Returns: A tuple with the pager and the trigger.
 func createPager() -> Pager<Page> {
   let nextPage = { (previousPage: Page?) -> Observable<Page> in
     let last = previousPage?.values.last ?? 0
@@ -42,10 +43,10 @@ func createPager() -> Pager<Page> {
   return Pager(make: nextPage, while: hasNext)
 }
 
-/// create a `Page` pager that emits 4 pages and complete
-/// each page is emitted asynchronously after a 0.1s delay
+/// Create a `Page` pager that emits 4 pages and complete.
+/// Each page is emitted asynchronously after a 0.1s delay
 ///
-/// - returns: a tuple with the pager and the trigger
+/// - Returns: A tuple with the pager and the trigger
 func createASyncPager() -> Pager<Page> {
 
   let nextPage = { (previousPage: Page?) -> Observable<Page> in
@@ -102,7 +103,7 @@ class Tests: XCTestCase {
         expectation.fulfill()
       })
       .addDisposableTo(disposeBag)
-    
+
     pager.next()
     waitForExpectations(timeout: 1, handler: nil)
   }
@@ -170,7 +171,6 @@ class Tests: XCTestCase {
 
     let trigger = PublishSubject<Void>()
 
-    
     Observable
       .page(arr, by: 2, when: trigger)
       .subscribe(
