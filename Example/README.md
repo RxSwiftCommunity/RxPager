@@ -3,6 +3,8 @@
 Build and Run the RxPager-Example target from Xcode.
 The demo app display a simple tableview with a paged datasource
 
+![demo](http://pgherveou.github.io/RxPager/demo.gif)
+
 ```swift
 override func viewDidLoad() {
     super.viewDidLoad()
