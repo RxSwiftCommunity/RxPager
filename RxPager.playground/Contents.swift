@@ -29,9 +29,9 @@ let next = trigger.onNext
 page$.subscribe(onNext: { print($0) })
 // print [1, 2 ,3]
 
-next() // print [4, 5, 6]
-next() // print [7, 8, 9]
-next() // print [10, 11, 12]
+next(()) // print [4, 5, 6]
+next(()) // print [7, 8, 9]
+next(()) // print [10, 11, 12]
 
 // MARK: Example 2 (page from array)
 
@@ -40,6 +40,6 @@ Observable
   .subscribe(onNext: { print($0) })
 
 // print [1, 2 ,3]
-next() // print [4, 5, 6]
-next() // print [4, 5, 6]
-next() // print [10]
+next(()) // print [4, 5, 6]
+next(()) // print [4, 5, 6]
+next(()) // print [10]

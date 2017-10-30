@@ -86,7 +86,7 @@ class Tests: XCTestCase {
         XCTAssertEqual(page.values, [1, 2, 3])
         expectation.fulfill()
       })
-      .addDisposableTo(disposeBag)
+        .disposed(by: disposeBag)
 
     waitForExpectations(timeout: 1, handler: nil)
   }
@@ -102,7 +102,7 @@ class Tests: XCTestCase {
         XCTAssertEqual(page.values, [4, 5, 6])
         expectation.fulfill()
       })
-      .addDisposableTo(disposeBag)
+        .disposed(by: disposeBag)
 
     pager.next()
     waitForExpectations(timeout: 1, handler: nil)
@@ -118,7 +118,7 @@ class Tests: XCTestCase {
       .subscribe(onNext: { page in
         XCTAssertEqual(page.values, [7, 8, 9])
         expectation.fulfill()
-      }).addDisposableTo(disposeBag)
+      }).disposed(by: disposeBag)
 
     pager.next()
     pager.next()
@@ -130,11 +130,9 @@ class Tests: XCTestCase {
     let expectation = self.expectation(description: "get completed event")
     let pager = createPager()
 
-    pager.page
-      .subscribe(
-        onCompleted: { _ in expectation.fulfill() }
-      )
-      .addDisposableTo(disposeBag)
+    pager.page.subscribe(onCompleted: {
+        expectation.fulfill()
+    }).disposed(by: disposeBag)
 
     // starts with [1, 2 ,3]
     pager.next() // [4, 5, 6]
@@ -156,7 +154,7 @@ class Tests: XCTestCase {
         // wait for non event and fulfill
         delay(0.2) { expectation.fulfill() }
       })
-      .addDisposableTo(disposeBag)
+        .disposed(by: disposeBag)
 
     pager.next() // should be a noop
     pager.next() // should be a noop
@@ -177,20 +175,20 @@ class Tests: XCTestCase {
         onNext: {
           pages.append($0)
         },
-        onCompleted: { _ in
+        onCompleted: {
           XCTAssert(pages.count == expected.count)
           zip(pages, expected).forEach { XCTAssert($0 == $1) }
           expectation.fulfill()
         }
       )
-      .addDisposableTo(disposeBag)
+        .disposed(by: disposeBag)
 
     // start with [0, 1]
-    trigger.onNext() // [2, 3]
-    trigger.onNext() // [4, 5]
-    trigger.onNext() // [6, 7]
-    trigger.onNext() // [8, 9]
-    trigger.onNext() // [10]
+    trigger.onNext(()) // [2, 3]
+    trigger.onNext(()) // [4, 5]
+    trigger.onNext(()) // [6, 7]
+    trigger.onNext(()) // [8, 9]
+    trigger.onNext(()) // [10]
     waitForExpectations(timeout: 1, handler: nil)
   }
 }
