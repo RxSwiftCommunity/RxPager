@@ -79,6 +79,6 @@ public struct Pager<T> {
 
     /// trigger the next page
     public func next() {
-        trigger.onNext()
+        trigger.onNext(())
     }
 }

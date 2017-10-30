@@ -63,7 +63,7 @@ class PagerTableViewController: UITableViewController {
         page
             .scan([Int](), accumulator: +)
             .subscribe(onNext: { [weak self] in self?.dataSource = $0 })
-            .addDisposableTo(disposeBag)
+            .disposed(by: disposeBag)
 
         // update dataSource and reset the animating flag, when the stream complete
         page
@@ -71,7 +71,7 @@ class PagerTableViewController: UITableViewController {
                 self?.showAnimatingCell = false
                 self?.tableView.reloadData()
             })
-            .addDisposableTo(disposeBag)
+            .disposed(by: disposeBag)
     }
 
     // MARK: UITableViewController methods
