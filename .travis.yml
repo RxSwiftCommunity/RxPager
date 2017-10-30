@@ -9,5 +9,5 @@ before_install:
   - gem install cocoapods xcpretty --no-rdoc --no-ri --no-document --quiet
   - pod install --project-directory=Example --repo-update
 script:
-  - set -o pipefail && xcodebuild test -workspace Example/RxPager.xcworkspace -scheme RxPager-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c
+  - set -o pipefail && xcodebuild -workspace Example/RxPager.xcworkspace -scheme RxPager-Example -configuration 'Debug' -destination 'platform=iOS Simulator,name=iPhone 7,OS=11.0' -sdk iphonesimulator build test  | xcpretty -c
   - pod lib lint
