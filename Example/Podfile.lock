@@ -1,9 +1,9 @@
 PODS:
-  - RxCocoa (3.0.1):
-    - RxSwift (~> 3.0)
+  - RxCocoa (3.6.1):
+    - RxSwift (~> 3.6)
   - RxPager (1.0.0):
-    - RxSwift (~> 3.0.0-beta.1)
-  - RxSwift (3.0.1)
+    - RxSwift (~> 3.0)
+  - RxSwift (3.6.1)
 
 DEPENDENCIES:
   - RxCocoa (~> 3.0)
@@ -14,10 +14,10 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  RxCocoa: 15a52fc590dcc700cb4a690a633b5c5184ce3a78
-  RxPager: b6a5c2c5f119cbcc3cacf8d68b8b9a19cd716049
-  RxSwift: af5680055c4ad04480189c52d28385b1029493a6
+  RxCocoa: 84a08739ab186248c7f31ce4ee92d6f8a947d690
+  RxPager: 4e6287bb4c323f7907e964e47b6fc83feb2b9b33
+  RxSwift: f9de85ea20cd2f7716ee5409fc13523dc638e4e4
 
-PODFILE CHECKSUM: 7eaaf204b7d293b7946dc307b63cd9b245908180
+PODFILE CHECKSUM: 937100fe696baf5d4a970a0cf212af7b6caa353d
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.3.1
