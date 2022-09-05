@@ -3,12 +3,12 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 target 'RxPager_Example' do
-  pod 'RxCocoa', '~> 4.0'
+  pod 'RxCocoa', '~> 6.5'
   pod 'RxPager', :path => '../'
 end
 
 target 'RxPager_Tests' do
   inherit! :search_paths
-  pod 'RxCocoa', '~> 4.0'
+  pod 'RxCocoa', '~> 6.5'
   pod 'RxPager', :path => '../'
 end
