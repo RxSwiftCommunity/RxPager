@@ -12,17 +12,17 @@ extension Observable {
     ///   - hasNext: The hasNext function to define if there are more pages.
     ///   - trigger: The Observable used to trigger next page.
     /// - Returns: The paged Observable.
-    public static func page(make nextPage: @escaping (E?) -> Observable<E>,
-                            while hasNext: @escaping (E) -> Bool,
-                            when trigger: Observable<Void>) -> Observable<E> {
+    public static func page(make nextPage: @escaping (Element?) -> Observable<Element>,
+                            while hasNext: @escaping (Element) -> Bool,
+                            when trigger: Observable<Void>) -> Observable<Element> {
 
         // get next page and recurse
-        func next(_ fromPage: E?) -> Observable<E> {
-            return nextPage(fromPage).map { (page: E) -> Observable<E> in
+        func next(_ fromPage: Element?) -> Observable<Element> {
+            return nextPage(fromPage).map { (page: Element) -> Observable<Element> in
                 guard hasNext(page) else { return Observable.just(page) }
                 return Observable.concat([
                     Observable.just(page),
-                    Observable.never().takeUntil(trigger),
+                    Observable.never().take(until: trigger),
                     next(page)
                     ])
                 }.flatMap { $0 }
@@ -38,23 +38,23 @@ extension Observable {
     ///   - pageSize: The size of each page emitted by the pager.
     ///   - trigger: An Observable used to trigger next page load.
     /// - Returns: The paged Observable.
-    public static func page(_ array: [E], by pageSize: Int,
-                            when trigger: Observable<Void>) -> Observable<[E]> {
+    public static func page(_ array: [Element], by pageSize: Int,
+                            when trigger: Observable<Void>) -> Observable<[Element]> {
 
         var index = array.startIndex
 
-        func hasNext(_: [E]) -> Bool {
+        func hasNext(_: [Element]) -> Bool {
             return index != array.endIndex
         }
 
-        func nextPage(_: [E]?) -> Observable<[E]> {
+        func nextPage(_: [Element]?) -> Observable<[Element]> {
             let newIndex = array.index(index, offsetBy: pageSize, limitedBy: array.endIndex) ?? array.endIndex
             let slice = array[index..<newIndex]
             index = newIndex
-            return Observable<[E]>.just(Array(slice))
+            return Observable<[Element]>.just(Array(slice))
         }
 
-        return Observable<[E]>.page(make: nextPage, while: hasNext, when: trigger)
+        return Observable<[Element]>.page(make: nextPage, while: hasNext, when: trigger)
     }
 }
 

@@ -54,7 +54,7 @@ func createASyncPager() -> Pager<Page> {
     return Observable.just(Page(
       values: [last + 1, last + 2, last + 3],
       hasNext: last + 3 < 10)
-      ).delaySubscription(0.1, scheduler: MainScheduler.instance)
+      ).delaySubscription(.milliseconds(100), scheduler: MainScheduler.instance)
   }
 
   let hasNext = { (page: Page) -> Bool in

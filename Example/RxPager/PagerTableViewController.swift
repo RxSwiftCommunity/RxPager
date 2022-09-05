@@ -45,7 +45,7 @@ class PagerTableViewController: UITableViewController {
             let last = previousPage?.last ?? 0
             return Observable
                 .just(Array(1...20).map { last + $0 })
-                .delaySubscription(0.5, scheduler: MainScheduler.instance)
+                .delaySubscription(.milliseconds(500), scheduler: MainScheduler.instance)
         }
 
         func hasNext(_ page: [Int]?) -> Bool {

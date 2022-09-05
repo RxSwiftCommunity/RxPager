@@ -1,23 +1,33 @@
 PODS:
-  - RxCocoa (4.0.0):
-    - RxSwift (~> 4.0)
-  - RxPager (2.0.0):
-    - RxSwift (~> 4.0)
-  - RxSwift (4.0.0)
+  - RxCocoa (6.5.0):
+    - RxRelay (= 6.5.0)
+    - RxSwift (= 6.5.0)
+  - RxPager (3.0.0):
+    - RxSwift (~> 6.5)
+  - RxRelay (6.5.0):
+    - RxSwift (= 6.5.0)
+  - RxSwift (6.5.0)
 
 DEPENDENCIES:
-  - RxCocoa (~> 4.0)
+  - RxCocoa (~> 6.5)
   - RxPager (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - RxCocoa
+    - RxRelay
+    - RxSwift
 
 EXTERNAL SOURCES:
   RxPager:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  RxCocoa: d62846ca96495d862fa4c59ea7d87e5031d7340e
-  RxPager: d3e18cb91d71a3500dbcf650cad33a5780ec94ea
-  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
+  RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxPager: 39fd914ee24fd457f398d2998265d43ea5a49af9
+  RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
+  RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
 
-PODFILE CHECKSUM: f1e19ca9ed7dad25ae7202b45ac0e9232022d9b1
+PODFILE CHECKSUM: fa5c2eeb4e75740eb58ccdc26b2ec2abc03053ee
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.11.0
